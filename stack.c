@@ -7,6 +7,14 @@ int sp=0;
 double val[MAXVAL];
 double cache[CACHE_MAXVAL];
 
+double getcache(char s[]) {
+	char c = s[1] - '0'; /* should be of form $d where d in 0--9 */
+	if (c > CACHE_MAXVAL) {
+		printf("error: cache stack is only %d deep, can't get %d", CACHE_MAXVAL, c);
+	}
+	return cache[c];
+}
+
 void push(double f) {
 	if (sp < MAXVAL) {
 		val[sp++] = f;

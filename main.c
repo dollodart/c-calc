@@ -64,7 +64,7 @@ int main() {
 				push(ufunclu(s));
 				break;
 			case VARIABLE:
-				push(atof(s)); /* the variable must already be substituted by the getop routine */
+				push(getcache(s));
 				break;
 			case '+':
 				push(pop() + pop());

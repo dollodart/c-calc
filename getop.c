@@ -10,6 +10,13 @@ int getop(char s[]) {
 		;
 	s[1] = '\0';
 	if (!isdigit(c) && c != '.')
+		if (c == '$') {
+			c = getch(); /* 0--9 */
+			s[0] = '$';
+			s[1] = c;
+			s[2] = '\0';
+			return VARIABLE;
+		}
 		return c;
 	i = 0;
 	if (isdigit(c))
