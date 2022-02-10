@@ -1,11 +1,25 @@
 #include <stdio.h>
 #include "calc.h"
 #define MAXVAL 100
+#define CACHE_MAXVAL 10
+
 int sp=0;
 double val[MAXVAL];
+double cache[CACHE_MAXVAL];
 
 void push(double f) {
-	if (sp < MAXVAL) val[sp++] = f;
+	if (sp < MAXVAL) {
+		val[sp++] = f;
+
+		double ival = f;
+		double ipval;
+		for (int i = 0; i < CACHE_MAXVAL - 1; i++) {
+			ipval = cache[i+1];
+			cache[i+1] = cache[i];
+			cache[i] = ival;
+			ival = ipval;
+		}
+	}
 	else printf("error: stack full, can't push %g\n", f);
 
 }
