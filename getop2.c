@@ -1,17 +1,12 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include "getop2.h"
 
-#define NUMBER 0
-#define FUNCTION 1
-#define VARIABLE 2
-#define RECUR 100
-
-#define INPUT_BUFFER_SIZE 100
-static char dictionary[26][12];
+static char dictionary[NUM_ALPH][DICTIONARY_STR_SIZE];
 
 char * dictionary_lookup(char x) {
-	return dictionary[x - 'A'];
+	return dictionary[x - ALPHA];
 }
 
 /* emulating getch and ungetch for test input */
@@ -53,10 +48,10 @@ int numparse(char s[]) {
 	while (isdigit(s[i++] = c = getch())) /* note postfix++ */
 		;
 
-        if (c == '.') /* decimal point specification */
+        if (c == DECIMAL_DELIM) /* decimal point specification */
                 while (isdigit(s[i++] = c = getch()))
 			;
-        if (c == 'e' || c == 'E') /* scientific notation */
+        if (c == EXPONENT_SYMBOL_LOWER || c == EXPONENT_SYMBOL_UPPER) /* scientific notation */
         {
                 s[i++] = c = getch(); /* optional plus or minus */
                 while (isdigit(s[i++] = c = getch())); /* assumed integral exponent */
@@ -69,23 +64,23 @@ int varparse(char s[]){
 	int i, c, v;
 	i = 0; /* t is the first character */
 	v = getch(); /* assume no extraneous white space (or can iterate for it) */
-	if ('A' <= v <= 'Z') /* variable */
+	if (ALPHA <= v <= ZETA) /* variable */
 	{
 	    c = getch(); 
-	    if (c == '=') { /* definition */
+	    if (c == EQUALITY_OPERAND) { /* definition */
 		numparse(s); /* a number must follow, perhaps with some white space */
-		strcpy(dictionary[v - 'A'], s); /* copy to the allocated dictionary */
+		strcpy(dictionary[v - ALPHA], s); /* copy to the allocated dictionary */
 		return RECUR; /* this flag tells getop to recursively call to find the next operand, since this was just a definition */
 		}
 	    else { /* application/substitution */
 		ungetch(c);
-		strcpy(s, dictionary[v - 'A']);
+		strcpy(s, dictionary[v - ALPHA]);
 		return VARIABLE;
 	    }
 	}
 	else { /* function or operand */
 		s[i] = v;
-		while (!isdigit(s[++i] = c = getch()) && c !='.')
+		while (!isdigit(s[++i] = c = getch()) && c != DECIMAL_DELIM)
 			;
 		if (c != EOF) ungetch(c);
 		if (i > 1) return FUNCTION;
@@ -105,7 +100,7 @@ int getop2(char s[]) {
 	/* if var type, call varparse */
 	if (c == ' ' || c == '\t')
 		getop2(s);
-	else if (!isdigit(c) && c != '.'){
+	else if (!isdigit(c) && c != DECIMAL_DELIM){
 		ungetch(c);
 		rflag = varparse(s);
 		if (rflag == RECUR) getop2(s);
