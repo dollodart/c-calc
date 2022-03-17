@@ -29,17 +29,18 @@ int flush_buffer() {
 }
 
 int getch() {
-	if (sp == INPUT_BUFFER_SIZE - 1) {
-		printf("at stack capacity, nothing to get");
-		return 0;
+	if (sp >= INPUT_BUFFER_SIZE - 1) {
+		printf("at or above capacity, nothing to get\n");
+		return EOF;
 	}
 	return input_buffer[sp++];
 }
 
-char ungetch() {
-	if (sp == 0) {
-		printf("at stack bottom, fill buffer");
-		return 0;
+char ungetch(char c) {
+	/* input using char is for compatibility with ungetch implementation for stdin */
+	if (sp <= 0) {
+		printf("at input start, fill buffer\n");
+		return EOF;
 	}
 	return input_buffer[sp--];
 }
@@ -60,7 +61,7 @@ int numparse(char s[]) {
                 s[++i] = c = getch(); /* optional plus or minus */
                 while (isdigit(s[++i] = c = getch())); /* assumed integral exponent */
         }
-	ungetch();
+	ungetch(c);
 	s[i] = '\0';
 }
 
@@ -105,13 +106,13 @@ int getop2(char s[]) {
 	if (c == ' ' || c == '\t')
 		getop2(s);
 	else if (!isdigit(c) && c != '.'){
-		ungetch();
+		ungetch(c);
 		rflag = varparse(s);
 		if (rflag == RECUR) getop2(s);
 		else return rflag;
 	}
 	else {
-		ungetch();
+		ungetch(c);
 		numparse(s);
 		return NUMBER;
 	}

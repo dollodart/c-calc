@@ -5,4 +5,8 @@ int load_buffer(char s[]);
 int flush_buffer();
 char * dictionary_lookup(char);
 int getch();
-char ungetch();
+char ungetch(char c);
+
+#define CONSUME_WS(c) while ((c = getch()) == ' ' || c == '\t') \
+				  ;\
+		      ungetch(c);
