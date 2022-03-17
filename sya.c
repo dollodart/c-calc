@@ -1,33 +1,40 @@
 #include <stdio.h>
-#define MAXVAL 100
+#include "sya.h"
 
-char stack[MAXVAL];
-char printstack[MAXVAL];
+char stack[STACKH];
+char printstack[STACKH];
 int sp;
 int spp;
 
 /* note: reserve the zero index of the array for empty (not necessary, a negative index could be used)
  * for this reason, we need a prefix increment. */
 int push(char s) {
-  if (sp < MAXVAL) stack[++sp] = s;
+  if (sp < STACKH) stack[++sp] = s;
   else fprintf(stderr, "error: stack full, can't print %c\n", s);
   return 0;
 }
 
-int pop() {
+int pop(void) {
   if (sp > 0) return stack[sp--];
   else fprintf(stderr, "error: stack empty, can't pop\n");
   return '\0';
 }
 
 int print(char s) {
-  if (spp < MAXVAL) printstack[spp++] = s;
+  if (spp < STACKH) printstack[++spp] = s;
   else fprintf(stderr, "error: stack full, can't print %c\n", s);
   return 0;
 }
 
-int clear_print() {printstack[spp] = '\0'; while (spp--) printstack[spp] = '\0'; spp++;}
-int clear_stack() {stack[sp] = '\0'; while (sp--) stack[sp] = '\0'; sp++;}
+int popprint(void) {
+	if (spp > 0) return printstack[spp--];
+	else fprintf(stderr, "error: print stack empty, can't pop\n");
+	return 0;
+}
+
+int clear_print(void) {printstack[spp] = '\0'; while (spp--) printstack[spp] = '\0'; spp++;}
+int clear_stack(void) {stack[sp] = '\0'; while (sp--) stack[sp] = '\0'; sp++;}
+int clear(void) {clear_print(); clear_stack();}
 
 int get_prec(char s) {
 	switch (s) {
@@ -136,38 +143,14 @@ int syautomaton(char s) {
 	}
 }
 
-int main() {
-    char *testptr[6] = {
-	    "A*B+C",
-	    "A+B*C",
-	    "A*(B+C)",
-	    "A-B+C",
-	    "A*B^C+D",
-	    "A*(B+C*D)+E"};
-    
-    char s;
-    char *test;
-
-    for (int i=0; i < 6; i++) {
-	    test = testptr[i];
-	    fprintf(stderr, "%s infix ->\n", test);
-	    while (s = *test++) {
-		    syautomaton(s);
-	    }
-	    while (sp) {
-		    s = pop();
-		    print(s);
-		    fprintf(stderr, "end pop operator %c, printed to print stack", s);}
-	    fprintf(stderr, "->");
-	    char c;
-	    /* TODO: print the stack to stdout so this can be piped, regardless the verbosity from stderr */
-	    while (c = printstack[spp--]) {
-		    printf("entered loop");
-		    fprintf(stdout, "%c ", c);
-	    } /* this will trail a space */
-	    fprintf(stderr, "<-");
-	    clear_print();
-	    clear_stack();
+int syparse(char * s) {
+    char c;
+    while (c = *s++) {
+	    syautomaton(c);
     }
-    
+    while (sp) {
+	    c = pop();
+	    print(c);
+	    fprintf(stderr, "end pop operator %c, printed to print stack\n", c);
+    }
 }
