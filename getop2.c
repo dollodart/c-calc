@@ -54,15 +54,15 @@ int numparse(char s[]) {
 		;
 
         if (c == '.') /* decimal point specification */
-                while (isdigit(s[++i] = c = getch()))
+                while (isdigit(s[i++] = c = getch()))
 			;
         if (c == 'e' || c == 'E') /* scientific notation */
         {
-                s[++i] = c = getch(); /* optional plus or minus */
-                while (isdigit(s[++i] = c = getch())); /* assumed integral exponent */
+                s[i++] = c = getch(); /* optional plus or minus */
+                while (isdigit(s[i++] = c = getch())); /* assumed integral exponent */
         }
 	ungetch(c);
-	s[i] = '\0';
+	s[--i] = '\0';
 }
 
 int varparse(char s[]){

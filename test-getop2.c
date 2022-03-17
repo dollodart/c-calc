@@ -71,5 +71,5 @@ int main(void) {
 	test_numparse_exponential_notation();
 	test_varparse();
 	test_varparse_multiple();
-	test_consume_ws();
+	/*test_consume_ws();*/
 }
