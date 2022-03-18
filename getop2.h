@@ -23,6 +23,7 @@ char ungetch(char c);
 #define EXPONENT_SYMBOL_LOWER 'e'
 
 #define NUMBER 2
-#define FUNCTION 3
-#define VARIABLE 4
-#define RECUR 5
+#define OPERATOR 3
+#define FUNCTION 4
+#define VARIABLE 5
+#define RECUR 6

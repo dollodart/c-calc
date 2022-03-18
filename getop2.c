@@ -79,14 +79,15 @@ int varparse(char s[]){
 		return VARIABLE;
 	    }
 	}
-	else { /* function or operand */
+	else { /* function or operator */
 		int i = 0;
 		s[i] = v;
 		while (isalpha(s[++i] = c = getch()))
 			;
 		if (c != EOF) ungetch(c);
 		if (i > 1) return FUNCTION;
-		else return s[0]; /* operand */
+		s[1] = '\0';
+		return OPERATOR; 
 		}
 }
 
