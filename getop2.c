@@ -61,8 +61,7 @@ int numparse(char s[]) {
 }
 
 int varparse(char s[]){
-	int i, c, v;
-	i = 0; /* t is the first character */
+	int c, v;
 	v = getch(); /* assume no extraneous white space (or can iterate for it) */
 	if (ALPHA <= v && v <= ZETA) /* variable */
 	{
@@ -70,6 +69,8 @@ int varparse(char s[]){
 	    if (c == EQUALITY_OPERAND) { /* definition */
 		numparse(s); /* a number must follow, perhaps with some white space */
 		strcpy(dictionary[v - ALPHA], s); /* copy to the allocated dictionary */
+		/* set output first character to null */
+		s[0] = '\0';
 		return RECUR; /* this flag tells getop to recursively call to find the next operand, since this was just a definition */
 		}
 	    else { /* application/substitution */
@@ -79,6 +80,7 @@ int varparse(char s[]){
 	    }
 	}
 	else { /* function or operand */
+		int i = 0;
 		s[i] = v;
 		while (isalpha(s[++i] = c = getch()))
 			;

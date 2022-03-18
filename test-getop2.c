@@ -28,26 +28,38 @@ int test_numparse_exponential_notation(void) {
 	flush_buffer();
 }
 
-int test_varparse(void) {
+int test_varparse_defn(void) {
 	char output[100];
-	char input[] = "A=3";
+	char input[] = "A=3.53123e+03";
 	load_buffer(input);
 	varparse(output);
-	printf("test_varparse '%s' -> '%s'\n", input, output);
+	printf("test_varparse_defn '%s' -> '%s'\n", input, output);
 	printf("in dictionary A = '%s'\n", dictionary_lookup('A'));
 	flush_buffer();
 }
 
-int test_varparse_multiple(void) {
+int test_varparse_multiple_defn(void) {
 	char output[100];
 	char input[] = "A=3 B=5";
 	load_buffer(input);
 	varparse(output);
-	printf("test_varparse '%s' -> '%s'\n", input, output);
+	printf("test_varparse_multiple_defn '%s' -> '%s'\n", input, output);
 	getch(); /* remove the space delimiting */
 	varparse(output);
-	printf("test_varparse (2nd call) '%s' -> '%s'\n", input, output);
+	printf("test_varparse_multiple_defn (2nd call) '%s' -> '%s'\n", input, output);
 	printf("in dictionary A = '%s', B = '%s'\n", dictionary_lookup('A'), dictionary_lookup('B'));
+	flush_buffer();
+}
+
+int test_varparse_defn_sub(void) {
+	char output[100];
+	char input[] = "A=3 A";
+	load_buffer(input);
+	varparse(output);
+	printf("test_varparse_defn_sub defn '%s' -> '%s'\n", input, output);
+	getch();
+	varparse(output);
+	printf("test varparse_defn_sub sub '%s' -> '%s'\n", input, output);
 	flush_buffer();
 }
 
@@ -60,12 +72,12 @@ int test_varparse_unary(void) {
 	flush_buffer();
 }
 
-int test_varparse_operand(void) {
+int test_varparse_operator(void) {
 	char output[100];
 	char input[] = "+";
 	load_buffer(input);
 	varparse(output);
-	printf("test_varparse_operand '%s' -> '%s'\n", input, output);
+	printf("test_varparse_operator '%s' -> '%s'\n", input, output);
 	flush_buffer();
 }
 
@@ -130,16 +142,21 @@ int test_consume_ws(void) {
 }
 
 int main(void) {
+
 	test_numparse_integer();
 	test_numparse_float();
 	test_numparse_exponential_notation();
-	test_varparse();
-	test_varparse_multiple();
+
+	test_varparse_multiple_defn();
 	test_varparse_unary();
-	test_varparse_operand();
-	/*test_consume_ws();*/
+	test_varparse_operator();
+	test_varparse_defn();
+	test_varparse_defn_sub();
+
 	test_getop2_multiple_ints();
 	test_getop2_multiple_floats();
 	test_getop2_multiple_vars();
 	test_getop2_ints_opers();
+
+	/*test_consume_ws();*/
 }
