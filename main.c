@@ -66,31 +66,33 @@ int main() {
 			case VARIABLE:
 				push(getcache(s));
 				break;
-			case '+':
-				push(pop() + pop());
-				break;
-			case '*':
-				push(pop() * pop());
-				break;
-			case '-': /* use tilde for negative numbers?
-				     otherwise need to know size of operand stack versus size of operator stack */
-				op2 = pop();
-				push(pop() - op2);
-				break;
-			case '/':
-				op2 = pop();
-				if (op2 != 0.0)
-					push(pop() / op2);
-				else
-					printf("error: zero divisor\n");
-				break;
-			case '%':
-				op2 = pop();
-				if (op2 != 0.0)
-					push( (int)pop() % (int)op2);
-				else
-					printf("error: zero modulus\n");
-				break;
+			case OPERATOR:
+				switch (s[0]) {
+					case '+':
+						push(pop() + pop());
+						break;
+					case '*':
+						push(pop() * pop());
+						break;
+					case '-': 
+						op2 = pop();
+						push(pop() - op2);
+						break;
+					case '/':
+						op2 = pop();
+						if (op2 != 0.0)
+						push(pop() / op2);
+						else
+						printf("error: zero divisor\n");
+						break;
+					case '%':
+						op2 = pop();
+						if (op2 != 0.0)
+						push( (int)pop() % (int)op2);
+						else
+						printf("error: zero modulus\n");
+						break;
+				}
 			case '\n':
 				printf("\%.8g\n", pop());
 			default:

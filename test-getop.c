@@ -1,4 +1,5 @@
-#include "getop2.h"
+#include "calc.h"
+#include "getop.h"
 #include <stdio.h>
 
 int test_numparse_integer(void) {
@@ -81,49 +82,49 @@ int test_varparse_operator(void) {
 	flush_buffer();
 }
 
-int test_getop2_multiple_ints(void) {
+int test_getop_multiple_ints(void) {
 	int tflag;
 	char output[100];
 	char input[] = "1352 32 1 65";
 	load_buffer(input);
 	for (int i = 0; i < 4; i++) {
-		tflag = getop2(output);
-		printf("test_getop2_multiple_ints '%s' -> '%s', tflag=%d\n", input, output, tflag);
+		tflag = getop(output);
+		printf("test_getop_multiple_ints '%s' -> '%s', tflag=%d\n", input, output, tflag);
 	}
 	flush_buffer();
 }
 
-int test_getop2_multiple_floats(void){ /* includes exponential notation */
+int test_getop_multiple_floats(void){ /* includes exponential notation */
 	int tflag;
 	char output[100];
 	char input[] = "1.32 5.3e2 6.09E-2";
 	load_buffer(input);
 	for (int i =0; i < 3; i++) {
-		tflag = getop2(output);
-		printf("test_getop2_multiple_floats '%s' -> '%s', tflag=%d\n", input, output, tflag);
+		tflag = getop(output);
+		printf("test_getop_multiple_floats '%s' -> '%s', tflag=%d\n", input, output, tflag);
 	}
 	flush_buffer();
 }
 
-int test_getop2_multiple_vars(void) { /* this is recursive since getop2 should only store definitions, not return operands for them */
+int test_getop_multiple_vars(void) { /* this is recursive since getop should only store definitions, not return operands for them */
 	int tflag;
 	char output[100];
 	char input[] = "A=3 B=4 C=5";
 	load_buffer(input);
-	tflag = getop2(output);
-	printf("test_getop2_multiple_vars '%s' -> '%s', tflag=%d\n", input, output, tflag);
+	tflag = getop(output);
+	printf("test_getop_multiple_vars '%s' -> '%s', tflag=%d\n", input, output, tflag);
 	printf("in dictionary A = '%s', B = '%s', C = '%s'\n", dictionary_lookup('A'), dictionary_lookup('B'), dictionary_lookup('C'));
 	flush_buffer();
 }
 
-int test_getop2_ints_opers(void) { /* the simplest practical use case */
+int test_getop_ints_opers(void) { /* the simplest practical use case */
 	int tflag;
 	char output[100];
 	char input[] = "3 5 + 8 *";
 	load_buffer(input);
 	for (int i=0; i< 5; i++) {
-		tflag = getop2(output);
-		printf("test_getop2_ints_opers '%s' -> '%s', tflag=%d\n", input, output, tflag);
+		tflag = getop(output);
+		printf("test_getop_ints_opers '%s' -> '%s', tflag=%d\n", input, output, tflag);
 	}
 	flush_buffer();
 }
@@ -157,10 +158,10 @@ int main(void) {
 	test_varparse_defn();
 	test_varparse_defn_sub();
 
-	test_getop2_multiple_ints();
-	test_getop2_multiple_floats();
-	test_getop2_multiple_vars();
-	test_getop2_ints_opers();
+	test_getop_multiple_ints();
+	test_getop_multiple_floats();
+	test_getop_multiple_vars();
+	test_getop_ints_opers();
 
 	/*test_consume_ws();*/
 }

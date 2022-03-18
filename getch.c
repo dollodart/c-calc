@@ -1,29 +1,33 @@
 #include <stdio.h>
-#define BUFSIZE 100
+#include <string.h>
+#include "calc.h"
 
-char buf[BUFSIZE];
-int bufp = 0;
+static int sp = 0;
+static char input_buffer[INPUT_BUFFER_SIZE];
 
-/* Exercise 4-9 asks to implement get and unget for EOF, which is negative 1.
- * why doesn't that work? we aren't using unsigned integers. */
-
-int getch(void)
-{
-	return (bufp > 0) ? buf[--bufp] : getchar();
+int load_buffer(char * s) {
+	strcpy(input_buffer, s);
+	sp = 0;
 }
 
-void ungetch(int c)
-{
-	if (bufp >= BUFSIZE)
-		printf("ungetch: too many characters\n");
-	else
-		buf[bufp++] = c;
+int flush_buffer() {
+	memset(input_buffer, 0, INPUT_BUFFER_SIZE);
+	sp = 0;
 }
 
-void ungets(char s[])
-{
-	/* naive implementation. maybe use string length to know before pushing
-	 * onto the stack whether the whole string will fit. */
-	int c;
-	while (c = *s++) ungetch(c);
+int getch() {
+	if (sp >= INPUT_BUFFER_SIZE - 1) {
+		printf("at or above capacity, nothing to get\n");
+		return EOF;
+	}
+	return input_buffer[sp++];
+}
+
+char ungetch(int c) {
+	/* input using char is for compatibility with ungetch implementation for stdin */
+	if (sp <= 0) {
+		printf("at input start, fill buffer\n");
+		return EOF;
+	}
+	return input_buffer[sp--];
 }
