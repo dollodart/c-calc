@@ -101,6 +101,17 @@ int test_getop2_multiple_vars(void) { /* this is recursive since getop2 should o
 	flush_buffer();
 }
 
+int test_getop2_ints_opers(void) { /* the simplest practical use case */
+	char output[100];
+	char input[] = "3 5 + 8 *";
+	load_buffer(input);
+	for (int i=0; i< 5; i++) {
+		getop2(output);
+		printf("test_getop2_ints_opers '%s' -> '%s'\n", input, output);
+	}
+	flush_buffer();
+}
+
 int test_consume_ws(void) {
 	char input[] = "\t A=3\t ";
 	load_buffer(input);
@@ -130,4 +141,5 @@ int main(void) {
 	test_getop2_multiple_ints();
 	test_getop2_multiple_floats();
 	test_getop2_multiple_vars();
+	test_getop2_ints_opers();
 }
