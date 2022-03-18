@@ -51,6 +51,24 @@ int test_varparse_multiple(void) {
 	flush_buffer();
 }
 
+int test_varparse_unary(void) {
+	char output[100];
+	char input[] = "sin 32";
+	load_buffer(input);
+	varparse(output);
+	printf("test_varparse_unary '%s' -> '%s'\n", input, output);
+	flush_buffer();
+}
+
+int test_varparse_operand(void) {
+	char output[100];
+	char input[] = "+";
+	load_buffer(input);
+	varparse(output);
+	printf("test_varparse_operand '%s' -> '%s'\n", input, output);
+	flush_buffer();
+}
+
 int test_getop2_multiple_ints(void) {
 	char output[100];
 	char input[] = "1352 32 1 65";
@@ -106,6 +124,8 @@ int main(void) {
 	test_numparse_exponential_notation();
 	test_varparse();
 	test_varparse_multiple();
+	test_varparse_unary();
+	test_varparse_operand();
 	/*test_consume_ws();*/
 	test_getop2_multiple_ints();
 	test_getop2_multiple_floats();

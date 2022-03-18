@@ -64,7 +64,7 @@ int varparse(char s[]){
 	int i, c, v;
 	i = 0; /* t is the first character */
 	v = getch(); /* assume no extraneous white space (or can iterate for it) */
-	if (ALPHA <= v <= ZETA) /* variable */
+	if (ALPHA <= v && v <= ZETA) /* variable */
 	{
 	    c = getch(); 
 	    if (c == EQUALITY_OPERAND) { /* definition */
@@ -80,7 +80,7 @@ int varparse(char s[]){
 	}
 	else { /* function or operand */
 		s[i] = v;
-		while (!isdigit(s[++i] = c = getch()) && c != DECIMAL_DELIM)
+		while (isalpha(s[++i] = c = getch()))
 			;
 		if (c != EOF) ungetch(c);
 		if (i > 1) return FUNCTION;
