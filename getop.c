@@ -9,7 +9,7 @@ int getop(char s[]) {
 	while ((s[0] = c = getch()) == ' ' || c == '\t')
 		;
 	s[1] = '\0';
-	if (!isdigit(c) && c != '.')
+	if (!isdigit(c) && c != '.') {
 		if (c == '$') {
 			c = getch(); /* 0--9 */
 			s[0] = '$';
@@ -18,6 +18,7 @@ int getop(char s[]) {
 			return VARIABLE;
 		}
 		return c;
+	}
 	i = 0;
 	if (isdigit(c))
 		while (isdigit(s[++i] = c = getch()))
