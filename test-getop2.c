@@ -51,6 +51,38 @@ int test_varparse_multiple(void) {
 	flush_buffer();
 }
 
+int test_getop2_multiple_ints(void) {
+	char output[100];
+	char input[] = "1352 32 1 65";
+	load_buffer(input);
+	for (int i = 0; i < 4; i++) {
+		getop2(output);
+		printf("test_getop2_multiple_ints '%s' -> '%s'\n", input, output);
+	}
+	flush_buffer();
+}
+
+int test_getop2_multiple_floats(void){ /* includes exponential notation */
+	char output[100];
+	char input[] = "1.32 5.3e2 6.09E-2";
+	load_buffer(input);
+	for (int i =0; i < 3; i++) {
+		getop2(output);
+		printf("test_getop2_multiple_floats '%s' -> '%s'\n", input, output);
+	}
+	flush_buffer();
+}
+
+int test_getop2_multiple_vars(void) { /* this is recursive since getop2 should only store definitions, not return operands for them */
+	char output[100];
+	char input[] = "A=3 B=4 C=5";
+	load_buffer(input);
+	getop2(output);
+	printf("test_getop2_multiple_vars '%s' -> '%s'\n", input, output);
+	printf("in dictionary A = '%s', B = '%s', C = '%s'\n", dictionary_lookup('A'), dictionary_lookup('B'), dictionary_lookup('C'));
+	flush_buffer();
+}
+
 int test_consume_ws(void) {
 	char input[] = "\t A=3\t ";
 	load_buffer(input);
@@ -75,4 +107,7 @@ int main(void) {
 	test_varparse();
 	test_varparse_multiple();
 	/*test_consume_ws();*/
+	test_getop2_multiple_ints();
+	test_getop2_multiple_floats();
+	test_getop2_multiple_vars();
 }
