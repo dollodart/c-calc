@@ -103,7 +103,7 @@ int getop2(char s[]) {
 	else if (!isdigit(c) && c != DECIMAL_DELIM){
 		ungetch(c);
 		rflag = varparse(s);
-		if (rflag == RECUR) getop2(s);
+		if (rflag == RECUR) {getop2(s);}
 		else return rflag;
 	}
 	else {

@@ -33,8 +33,8 @@ int test_varparse(void) {
 	char input[] = "A=3";
 	load_buffer(input);
 	varparse(output);
-	printf("test_varparse %s, %s\n", input, output);
-	printf("in dictionary A = %s\n", dictionary_lookup('A'));
+	printf("test_varparse '%s' -> '%s'\n", input, output);
+	printf("in dictionary A = '%s'\n", dictionary_lookup('A'));
 	flush_buffer();
 }
 
@@ -43,8 +43,11 @@ int test_varparse_multiple(void) {
 	char input[] = "A=3 B=5";
 	load_buffer(input);
 	varparse(output);
-	printf("test_varparse %s, %s\n", input, output);
-	printf("in dictionary A = %s, B = %s\n", dictionary_lookup('A'), dictionary_lookup('B'));
+	printf("test_varparse '%s' -> '%s'\n", input, output);
+	getch(); /* remove the space delimiting */
+	varparse(output);
+	printf("test_varparse (2nd call) '%s' -> '%s'\n", input, output);
+	printf("in dictionary A = '%s', B = '%s'\n", dictionary_lookup('A'), dictionary_lookup('B'));
 	flush_buffer();
 }
 
