@@ -82,44 +82,48 @@ int test_varparse_operator(void) {
 }
 
 int test_getop2_multiple_ints(void) {
+	int tflag;
 	char output[100];
 	char input[] = "1352 32 1 65";
 	load_buffer(input);
 	for (int i = 0; i < 4; i++) {
 		getop2(output);
-		printf("test_getop2_multiple_ints '%s' -> '%s'\n", input, output);
+		printf("test_getop2_multiple_ints '%s' -> '%s', tflag=%d\n", input, output, tflag);
 	}
 	flush_buffer();
 }
 
 int test_getop2_multiple_floats(void){ /* includes exponential notation */
+	int tflag;
 	char output[100];
 	char input[] = "1.32 5.3e2 6.09E-2";
 	load_buffer(input);
 	for (int i =0; i < 3; i++) {
-		getop2(output);
-		printf("test_getop2_multiple_floats '%s' -> '%s'\n", input, output);
+		tflag = getop2(output);
+		printf("test_getop2_multiple_floats '%s' -> '%s', tflag=%d\n", input, output, tflag);
 	}
 	flush_buffer();
 }
 
 int test_getop2_multiple_vars(void) { /* this is recursive since getop2 should only store definitions, not return operands for them */
+	int tflag;
 	char output[100];
 	char input[] = "A=3 B=4 C=5";
 	load_buffer(input);
-	getop2(output);
-	printf("test_getop2_multiple_vars '%s' -> '%s'\n", input, output);
+	tflag = getop2(output);
+	printf("test_getop2_multiple_vars '%s' -> '%s', tflag=%d/%c\n", input, output, tflag, tflag);
 	printf("in dictionary A = '%s', B = '%s', C = '%s'\n", dictionary_lookup('A'), dictionary_lookup('B'), dictionary_lookup('C'));
 	flush_buffer();
 }
 
 int test_getop2_ints_opers(void) { /* the simplest practical use case */
+	int tflag;
 	char output[100];
 	char input[] = "3 5 + 8 *";
 	load_buffer(input);
 	for (int i=0; i< 5; i++) {
-		getop2(output);
-		printf("test_getop2_ints_opers '%s' -> '%s'\n", input, output);
+		tflag = getop2(output);
+		printf("test_getop2_ints_opers '%s' -> '%s', tflag/char=%d/%c\n", input, output, tflag, tflag);
 	}
 	flush_buffer();
 }
