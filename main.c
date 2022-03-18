@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "calc.h"
+#include "getop.h"
 #define MAXOP 100
 
 /* lookup unary function, then evaluate.
@@ -54,6 +55,13 @@ int main() {
 	int type;
 	double op2;
 	char s[MAXOP];
+
+	flush_buffer();
+	char input[INPUT_BUFFER_SIZE];
+	char * p = input;
+	while ((*p++ = getchar()) != EOF)
+		;
+	load_buffer(input);
 
 	while ((type = getop(s)) != EOF) {
 		switch (type) {

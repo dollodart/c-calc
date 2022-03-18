@@ -11,7 +11,7 @@ int load_buffer(char * s) {
 }
 
 int flush_buffer() {
-	memset(input_buffer, 0, INPUT_BUFFER_SIZE);
+	memset(input_buffer, EOF, INPUT_BUFFER_SIZE);
 	sp = 0;
 }
 
