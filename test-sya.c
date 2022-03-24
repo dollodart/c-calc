@@ -4,11 +4,11 @@
 int test_infix(char *test_string) {
     fprintf(stderr, "%s infix ->\n", test_string);
     syparse(test_string); /* this fills printstack, which is accessed with popprint. */
-    char c;
+    char * s;
 
-    while (c = popprint()) {
+    while (s = popprint()) {
 	    fprintf(stderr, "entered loop\n");
-	    fprintf(stdout, "%c ", c);
+	    fprintf(stdout, "%s ", s);
     }
     clear(); /* this shouldn't be necessary */
     fprintf(stdout, "\n"); /* this separates tests output in the stdout*/

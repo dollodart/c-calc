@@ -14,6 +14,13 @@
 #define FUNCTION 4
 #define VARIABLE 5
 #define RECUR 6
+#define ADD_OPERATOR '+'
+#define SUB_OPERATOR '-'
+#define MUL_OPERATOR '*'
+#define DIV_OPERATOR '/'
+#define POW_OPERATOR '^'
+#define LEFT_PARANTHESIS '('
+#define RIGHT_PARANTHESIS ')'
 
 void push(double);
 double pop(void);

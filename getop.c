@@ -57,7 +57,15 @@ int varparse(char s[]){
 		if (c != EOF) ungetch(c);
 		if (i > 1) return FUNCTION;
 		s[1] = '\0';
-		return OPERATOR; 
+		switch (s[0]) {
+			case '+': return ADD_OPERATOR;
+			case '-': return SUB_OPERATOR;
+			case '*': return MUL_OPERATOR;
+			case '/': return DIV_OPERATOR;
+			case '^': return POW_OPERATOR;
+			case '(': return LEFT_PARANTHESIS;
+			case ')': return RIGHT_PARANTHESIS;
+			}
 		}
 }
 

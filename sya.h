@@ -1,6 +1,6 @@
 #define STACKH 100
 
 int syparse(char * s);
-int popprint(void);
+char * popprint(void);
 int clear(void);
 

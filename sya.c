@@ -1,53 +1,59 @@
 #include <stdio.h>
 #include "sya.h"
+#include "calc.h"
+#include "getop.h"
 
-char stack[STACKH];
-char printstack[STACKH];
+struct TOKEN {char * tokstr; int toktype;};
+
+struct TOKEN NULL_TOK = {NULL NULL};
+
+struct TOKEN stack[STACKH];
+struct TOKEN printstack[STACKH];
 int sp;
 int spp;
 
 /* note: reserve the zero index of the array for empty (not necessary, a negative index could be used)
  * for this reason, we need a prefix increment. */
-int push(char s) {
-  if (sp < STACKH) stack[++sp] = s;
-  else fprintf(stderr, "error: stack full, can't print %c\n", s);
+int tpush(struct TOKEN * tok) {
+  if (sp < STACKH) stack[++sp] = *tok;
+  else fprintf(stderr, "error: stack full, can't print %s\n", tok->tokstr);
   return 0;
 }
 
-int pop(void) {
-  if (sp > 0) return stack[sp--];
-  else fprintf(stderr, "error: stack empty, can't pop\n");
-  return '\0';
+struct TOKEN * tpop(void) {
+  if (sp > 0) return &stack[sp--];
+  else fprintf(stderr, "error: stack empty, can't tpop\n");
+  return &NULL_TOK;
 }
 
-int print(char s) {
-  if (spp < STACKH) printstack[++spp] = s;
-  else fprintf(stderr, "error: stack full, can't print %c\n", s);
+int print(struct TOKEN * tok) {
+  if (spp < STACKH) printstack[++spp] = *tok;
+  else fprintf(stderr, "error: stack full, can't print %s\n", tok->tokstr);
   return 0;
 }
 
-int popprint(void) {
-	if (spp > 0) return printstack[spp--];
-	else fprintf(stderr, "error: print stack empty, can't pop\n");
+char * popprint(void) {
+	if (spp > 0) return printstack[spp--].tokstr;
+	else fprintf(stderr, "error: print stack empty, can't tpop\n");
 	return 0;
 }
 
-int clear_print(void) {printstack[spp] = '\0'; while (spp--) printstack[spp] = '\0'; spp++;}
-int clear_stack(void) {stack[sp] = '\0'; while (sp--) stack[sp] = '\0'; sp++;}
+int clear_print(void) {printstack[spp] = NULL_TOK; while (spp--) printstack[spp] = NULL_TOK; spp++;}
+int clear_stack(void) {stack[sp] = NULL_TOK; while (sp--) stack[sp] = NULL_TOK; sp++;}
 int clear(void) {clear_print(); clear_stack();}
 
-int get_prec(char s) {
-	switch (s) {
-		case '^': return 3; break;
-		case '/': case '*': return 2; break;
-		case '-': case '+': return 1; break;
+int get_prec(int toktype) {
+	switch (toktype) {
+		case ADD_OPERATOR: case SUB_OPERATOR: return 1; break;
+		case MUL_OPERATOR: case DIV_OPERATOR: return 2; break;
+		case POW_OPERATOR: return 3; break;
 		default: return -1; break;
 	}
 }
 
-int get_assoc(char s) {
-	switch (s) {
-		case '^': return 1; break;
+int get_assoc(int toktype) {
+	switch (toktype) {
+		case POW_OPERATOR: return 1; break;
 		default: return 0; break;}
 }
 
@@ -56,10 +62,10 @@ int get_assoc(char s) {
 
     1. If the incoming symbols is an operand, print it.
 
-    2. If the incoming symbol is a left parenthesis, print [sic, push] it on the stack.
+    2. If the incoming symbol is a left parenthesis, print [sic, tpush] it on the stack.
 
     3. If the incoming symbol is a right parenthesis: discard the right
-    parenthesis, pop and print the stack symbols until you see a left
+    parenthesis, tpop and print the stack symbols until you see a left
     parenthesis. Pop the left parenthesis and discard it.
 
     4. If the incoming symbol is an operator and the stack is empty or contains a
@@ -72,85 +78,91 @@ int get_assoc(char s) {
 
     6. If the incoming symbol is an operator and has either lower precedence than
     the operator on the top of the stack, or has the same precedence as the
-    operator on the top of the stack and is left associative -- continue to pop
+    operator on the top of the stack and is left associative -- continue to tpop
     the stack until this is not true. Then, print the incoming operator.
 
-    7. At the end of the expression, pop and print all operators on the stack. (No
+    7. At the end of the expression, tpop and print all operators on the stack. (No
     parentheses should remain.)
 */
 
-int syautomaton(char s) {
-	char s2;
+int syautomaton(TOKEN * tok) {
+	TOKEN * tok2;
 	int prec, prec2, assoc, assoc2;
 	fprintf(stderr, "on char %c\n  ", s);
-	switch (s) {
-		case '-': case '+': case '/': case '%': case '*': case '^':
+	switch (tok->toktype) {
+		case SUB_OPERATOR: case ADD_OPERATOR: case DIV_OPERATOR: case MOD_OPERATOR: case MUL_OPERATOR: case POW_OPERATOR:
 			/* rule 4 */
 			if (sp == 0) {
 				fprintf(stderr, "rule 4, empty stack\n");
-				push(s); 
+				tpush(s); 
 				return 0;}
-			s2 = pop();
-			if (s2 == '(') {
+			tok2 = tpop();
+			if (*s2->tokstr == '(') {
 				fprintf(stderr, "rule 4, left paranthesis\n");
-				push(s2);
-				push(s);
+				tpush(s2);
+				tpush(s);
 				return 0;}
 			
-			prec = get_prec(s);
-			assoc = get_assoc(s);
+			prec = get_prec(tok->toktype);
+			assoc = get_assoc(tok->toktype);
 
 			/* rules 5 and 6 */
-			while ( (prec2 = get_prec(s2)) >= prec
-				|| (prec2 == prec && get_assoc(s2) == 0) )
+			while ( (prec2 = get_prec(tok2->toktype)) >= prec
+				|| (prec2 == prec && get_assoc(tok2->toktype) == 0) )
 			{
 				fprintf(stderr, "rule 6, precedence/association delta\n");
 				if (sp == 0 &&
-				   (get_prec(s2) >= prec ||
-				    prec2 == prec && get_assoc(s2) == 0)) {
+				   (get_prec(tok2->toktype) >= prec ||
+				    prec2 == prec && get_assoc(tok2->toktype) == 0)) {
 					/* revert to rule 4 if we have no more operators in the stack*/
 					fprintf(stderr, "rule 4 within rule 6 (empty stack)\n");
-			 		print(s2);
-					push(s);
+			 		print(tok2);
+					tpush(tok);
 					return 0;
 				}
 				else {
-					print(s2);
-					s2 = pop();
+					print(tok2);
+					tok2 = tpop();
 				}
 			}
 
 			fprintf(stderr, "rule 5 (maybe at end of rule 6), precedence/association delta\n");
-			push(s2);
-			push(s);
+			tpush(tok2);
+			tpush(tok);
 
 			break;
-		case ')': /* rule 3 */
+		case RIGHT_PARANTHESIS: /* rule 3 */
 			fprintf(stderr, "rule 3, right paranthesis\n");
 			fprintf(stderr, "current value of operator stack is %s", stack);
-			while ((s2 = pop()) != '(') {
-				print(s2);
+			while ((tok2 = tpop())->toktype != LEFT_PARANTHESIS) {
+				print(tok2);
 			}
 			break;
-		case '(': /* rule 2 */
+		case LEFT_PARANTHESIS: /* rule 2 */
 			fprintf(stderr, "rule 2, left paranthesis\n");
-			push(s);
+			tpush(tok);
 			break;
 		default: /* rule 1 */
 			fprintf(stderr, "rule 1, operand\n");
-			print(s);
+			print(tok);
 			break;
 	}
 }
 
 int syparse(char * s) {
-    char c;
-    while (c = *s++) {
-	    syautomaton(c);
+    load_buffer(s);
+    int toktype;
+    char *ss;
+    struct TOKEN * tok;
+    int tokc = 0;
+    while (toktype = getop(ss)) {
+	    tok = &stack[tokc++];
+	    syautomaton(tok);
     }
     while (sp) {
-	    c = pop();
-	    print(c);
-	    fprintf(stderr, "end pop operator %c, printed to print stack\n", c);
+	    tok = tpop();
+	    print(tok);
+	    fprintf(stderr, "end tpop operator %s, printed to print stack\n", tok->tokstr);
     }
+    flush_buffer();
 }
