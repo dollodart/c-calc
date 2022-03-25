@@ -3,10 +3,6 @@
 #include "calc.h"
 #include "getop.h"
 
-struct TOKEN {char * tokstr; int toktype;};
-
-struct TOKEN NULL_TOK = {NULL NULL};
-
 struct TOKEN stack[STACKH];
 struct TOKEN printstack[STACKH];
 int sp;
@@ -22,7 +18,7 @@ int tpush(struct TOKEN * tok) {
 
 struct TOKEN * tpop(void) {
   if (sp > 0) return &stack[sp--];
-  else fprintf(stderr, "error: stack empty, can't tpop\n");
+  else fprintf(stderr, "error: stack empty, can't pop\n");
   return &NULL_TOK;
 }
 
@@ -34,7 +30,7 @@ int print(struct TOKEN * tok) {
 
 char * popprint(void) {
 	if (spp > 0) return printstack[spp--].tokstr;
-	else fprintf(stderr, "error: print stack empty, can't tpop\n");
+	else fprintf(stderr, "error: print stack empty, can't pop\n");
 	return 0;
 }
 
@@ -65,7 +61,7 @@ int get_assoc(int toktype) {
     2. If the incoming symbol is a left parenthesis, print [sic, tpush] it on the stack.
 
     3. If the incoming symbol is a right parenthesis: discard the right
-    parenthesis, tpop and print the stack symbols until you see a left
+    parenthesis, pop and print the stack symbols until you see a left
     parenthesis. Pop the left parenthesis and discard it.
 
     4. If the incoming symbol is an operator and the stack is empty or contains a
@@ -78,10 +74,10 @@ int get_assoc(int toktype) {
 
     6. If the incoming symbol is an operator and has either lower precedence than
     the operator on the top of the stack, or has the same precedence as the
-    operator on the top of the stack and is left associative -- continue to tpop
+    operator on the top of the stack and is left associative -- continue to pop
     the stack until this is not true. Then, print the incoming operator.
 
-    7. At the end of the expression, tpop and print all operators on the stack. (No
+    7. At the end of the expression, pop and print all operators on the stack. (No
     parentheses should remain.)
 */
 
