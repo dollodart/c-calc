@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "sya.h"
 #include "calc.h"
 #include "getop.h"
@@ -153,6 +154,8 @@ int syparse(char * s) {
     int tokc = 0;
     while (toktype = getop(ss)) {
 	    tok = &stack[tokc++];
+	    tok->tokstr = strdup(ss);
+	    tok->toktype = toktype;
 	    syautomaton(tok);
     }
     while (sp) {
