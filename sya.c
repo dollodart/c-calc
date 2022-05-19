@@ -156,20 +156,17 @@ int syparse(char * s) {
     struct TOKEN * tok;
     int tokc = 0;
 
-    while ((toktype = getop(ss)) != EOF) {
+    while ((toktype = getop(ss)) > -1) {
 	    tok = &stack[tokc++];
 	    tok->tokstr = strdup(ss);
 	    tok->toktype = toktype;
-	    printf("%s\n", tok->tokstr);
-	    /*syautomaton(tok);*/
+	    syautomaton(tok);
     }
 
-    /*
     while (sp) {
 	    tok = tpop();
 	    print(tok);
 	    fprintf(stderr, "end tpop operator %s, printed to print stack\n", tok->tokstr);
     }
     flush_buffer();
-    */
 }

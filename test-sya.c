@@ -16,12 +16,11 @@ int test_infix(char *test_string) {
 
 
 int main(void) {
-	syparse("A*B+C");
-	/*test_infix("A*B+C");
-	test_infix("A+B*C");
-	test_infix("A*(B+C)");
-	test_infix("A-B+C");
-	test_infix("A*B^C+D");
-	test_infix("A*(B+C*D)+E");
-	*/
+	test_infix("2*3+4");
+	test_infix("2*3+4");
+	test_infix("2+3*4");
+	test_infix("2*(3+4)");
+	test_infix("2-3+4");
+	test_infix("2*3^4+5");
+	test_infix("2*(3+4*5)+6");
 }
