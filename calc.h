@@ -18,6 +18,7 @@
 #define SUB_OPERATOR '-'
 #define MUL_OPERATOR '*'
 #define DIV_OPERATOR '/'
+#define MOD_OPERATOR '%'
 #define POW_OPERATOR '^'
 #define LEFT_PARANTHESIS '('
 #define RIGHT_PARANTHESIS ')'

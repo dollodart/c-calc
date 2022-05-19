@@ -1,4 +1,4 @@
-int getop2(char s[]);
+int getop(char s[]);
 int varparse(char s[]);
 int numparse(char s[]);
 int load_buffer(char s[]);

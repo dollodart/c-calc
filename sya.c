@@ -9,6 +9,8 @@ struct TOKEN printstack[STACKH];
 int sp;
 int spp;
 
+struct TOKEN NULL_TOK = {};
+
 /* note: reserve the zero index of the array for empty (not necessary, a negative index could be used)
  * for this reason, we need a prefix increment. */
 int tpush(struct TOKEN * tok) {
@@ -35,8 +37,8 @@ char * popprint(void) {
 	return 0;
 }
 
-int clear_print(void) {printstack[spp] = NULL_TOK; while (spp--) printstack[spp] = NULL_TOK; spp++;}
-int clear_stack(void) {stack[sp] = NULL_TOK; while (sp--) stack[sp] = NULL_TOK; sp++;}
+int clear_print(void) {while (spp--) ; spp++; printstack[spp] = NULL_TOK;}
+int clear_stack(void) {while (sp--) ; sp++; stack[sp] = NULL_TOK;}
 int clear(void) {clear_print(); clear_stack();}
 
 int get_prec(int toktype) {
@@ -82,22 +84,22 @@ int get_assoc(int toktype) {
     parentheses should remain.)
 */
 
-int syautomaton(TOKEN * tok) {
-	TOKEN * tok2;
+int syautomaton(struct TOKEN * tok) {
+	struct TOKEN * tok2;
 	int prec, prec2, assoc, assoc2;
-	fprintf(stderr, "on char %c\n  ", s);
+	fprintf(stderr, "on token '%s'\n  ", tok->tokstr);
 	switch (tok->toktype) {
 		case SUB_OPERATOR: case ADD_OPERATOR: case DIV_OPERATOR: case MOD_OPERATOR: case MUL_OPERATOR: case POW_OPERATOR:
 			/* rule 4 */
 			if (sp == 0) {
 				fprintf(stderr, "rule 4, empty stack\n");
-				tpush(s); 
+				tpush(tok); 
 				return 0;}
 			tok2 = tpop();
-			if (*s2->tokstr == '(') {
+			if (tok2->toktype == LEFT_PARANTHESIS) {
 				fprintf(stderr, "rule 4, left paranthesis\n");
-				tpush(s2);
-				tpush(s);
+				tpush(tok2);
+				tpush(tok);
 				return 0;}
 			
 			prec = get_prec(tok->toktype);
@@ -130,7 +132,7 @@ int syautomaton(TOKEN * tok) {
 			break;
 		case RIGHT_PARANTHESIS: /* rule 3 */
 			fprintf(stderr, "rule 3, right paranthesis\n");
-			fprintf(stderr, "current value of operator stack is %s", stack);
+			fprintf(stderr, "current value of operator stack is '%s'", stack[sp].tokstr);
 			while ((tok2 = tpop())->toktype != LEFT_PARANTHESIS) {
 				print(tok2);
 			}
@@ -146,22 +148,28 @@ int syautomaton(TOKEN * tok) {
 	}
 }
 
+
 int syparse(char * s) {
     load_buffer(s);
     int toktype;
-    char *ss;
+    char ss[100];
     struct TOKEN * tok;
     int tokc = 0;
-    while (toktype = getop(ss)) {
+
+    while ((toktype = getop(ss)) != EOF) {
 	    tok = &stack[tokc++];
 	    tok->tokstr = strdup(ss);
 	    tok->toktype = toktype;
-	    syautomaton(tok);
+	    printf("%s\n", tok->tokstr);
+	    /*syautomaton(tok);*/
     }
+
+    /*
     while (sp) {
 	    tok = tpop();
 	    print(tok);
 	    fprintf(stderr, "end tpop operator %s, printed to print stack\n", tok->tokstr);
     }
     flush_buffer();
+    */
 }
