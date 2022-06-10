@@ -7,5 +7,5 @@ struct TOKEN {
 
 int syautomaton(struct TOKEN * tok);
 int syparse(char * s);
-char * popprint(void);
+struct TOKEN * popprint(void);
 int clear(void);

@@ -31,8 +31,8 @@ int print(struct TOKEN * tok) {
   return 0;
 }
 
-char * popprint(void) {
-	if (spp > 0) return printstack[spp--].tokstr;
+struct TOKEN * popprint(void) {
+	if (spp > 0) return &printstack[spp--];
 	else fprintf(stderr, "error: print stack empty, can't pop\n");
 	return 0;
 }
