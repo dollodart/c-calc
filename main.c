@@ -74,37 +74,35 @@ int main() {
 			case VARIABLE:
 				push(getcache(s));
 				break;
-			case OPERATOR:
-				switch (s[0]) {
-					case '+':
-						push(pop() + pop());
-						break;
-					case '*':
-						push(pop() * pop());
-						break;
-					case '-': 
-						op2 = pop();
-						push(pop() - op2);
-						break;
-					case '/':
-						op2 = pop();
-						if (op2 != 0.0)
-						push(pop() / op2);
-						else
-						printf("error: zero divisor\n");
-						break;
-					case '%':
-						op2 = pop();
-						if (op2 != 0.0)
-						push( (int)pop() % (int)op2);
-						else
-						printf("error: zero modulus\n");
-						break;
-				}
+			case ADD_OPERATOR:
+				push(pop() + pop());
+				break;
+			case MUL_OPERATOR:
+				push(pop() * pop());
+				break;
+			case SUB_OPERATOR:
+				op2 = pop();
+				push(pop() - op2);
+				break;
+			case DIV_OPERATOR:
+				op2 = pop();
+				if (op2 != 0.0)
+				push(pop() / op2);
+				else
+				printf("error: zero divisor\n");
+				break;
+			case MOD_OPERATOR:
+				op2 = pop();
+				if (op2 != 0.0)
+				push( (int)pop() % (int)op2);
+				else
+				printf("error: zero modulus\n");
+				break;
 			case '\n':
 				printf("\%.8g\n", pop());
+				break;
 			default:
-				printf("error: unknown command %s\n", s);
+				printf("error: unknown command code '%c'\n", type);
 				break;
 		}
 	}
