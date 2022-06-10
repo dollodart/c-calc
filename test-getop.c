@@ -7,7 +7,7 @@ int test_numparse_integer(void) {
 	char input[] = "1354 ABC";
 	load_buffer(input);
 	numparse(output);
-	printf("numparse '%s' -> '%s'\n", input, output);
+	printf("test_numparse_integer '%s' -> '%s'\n", input, output);
 	flush_buffer();
 }
 
@@ -16,7 +16,7 @@ int test_numparse_float(void) {
 	char input[] = "132.35123 325";
 	load_buffer(input);
 	numparse(output);
-	printf("numparse '%s' -> '%s'\n", input, output);
+	printf("test_numparse_float '%s' -> '%s'\n", input, output);
 	flush_buffer();
 }
 
@@ -25,7 +25,7 @@ int test_numparse_exponential_notation(void) {
 	char input[] = "1.34E+3 35";
 	load_buffer(input);
 	numparse(output);
-	printf("numparse '%s' -> '%s'\n", input, output);
+	printf("test_numparse_exponential_notation '%s' -> '%s'\n", input, output);
 	flush_buffer();
 }
 

@@ -16,6 +16,7 @@ int numparse(char s[]) {
 	i = 0; 
 
 	while (isdigit(s[i++] = c = getch())) /* note postfix++ */
+		;
         if (c == DECIMAL_DELIM) /* decimal point specification */
                 while (isdigit(s[i++] = c = getch()))
 			;
@@ -81,6 +82,8 @@ int getop(char s[]) {
 		getop(s);
 	else if (c == EOF)
 		return EOF;
+	else if (c == '\n')
+		return '\n';
 	else if (!isdigit(c) && c != DECIMAL_DELIM){
 		ungetch(c);
 		rflag = varparse(s);
