@@ -9,7 +9,10 @@ struct TOKEN printstack[STACKH];
 int sp;
 int spp;
 
-struct TOKEN NULL_TOK = {};
+struct TOKEN NULL_TOK = {}; /* 'a static object not explicitly initialized is
+			       initialized as if it (or its members) were
+			       assigned the constant 0', p 219, 2nd Ed The C
+			       Programming Language */
 
 /* note: reserve the zero index of the array for empty (not necessary, a negative index could be used)
  * for this reason, we need a prefix increment. */
