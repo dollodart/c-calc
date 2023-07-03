@@ -1,0 +1,31 @@
+# Description
+
+This is a calculator based on the exercises of chapter 4 of the Second Edition
+of the C Programming Language, Kernighan and Ritchie. The calculator is a
+postfix calculator recognizing common mathematical and scientific operators and
+with the ability to read and recall variable definitions such as A=1. Also
+provided is an in-fix to post-fix converter using the shunting yard algorithm.
+
+# TODOS
+
+- Make the SYA handle definitions (put them all at the front of the output) and
+  unary operators.
+- Make SYA output pipe-able to calculator output. Currently SYA passes it's
+  tests but adds junk when reading standard in and piping to standard out.
+- Test the calculator proper, rather than just its parser.
+
+# Compiling and Executing
+
+To compile the calculator and SYA programs:
+
+gcc calc.h getop.h sya.h getop.c getch.c sya.c main-sya.c -o sya.o -lm
+gcc calc.h getop.h main.c stack.c getop.c getch.c -o calc.o -lm
+
+Then put the input into a file, and execute as `./sya.o < syainput.txt' or `./calc.o < calcinput.txt'.
+
+To compile the test programs for the calculator and SYA programs:
+
+gcc calc.h getop.h sya.h getop.c getch.c sya.c test-sya.c -o tsya.o -lm
+gcc calc.h getop.h getop.c getch.c test-getop.c -o tcalc.o -lm
+
+Note the test for the calculator is actually a test of its parser, getop.c. The tests are ran by `./tsya.o' and `./tcalc.o'.
